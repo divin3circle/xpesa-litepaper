@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xpesa — Product Requirements Document</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.141 0.005 285.823);
+    --card: oklch(1 0 0);
+    --primary: oklch(0.508 0.118 165.612);
+    --primary-foreground: oklch(0.979 0.021 166.113);
+    --secondary: oklch(0.967 0.001 286.375);
+    --secondary-foreground: oklch(0.21 0.006 285.885);
+    --muted: oklch(0.967 0.001 286.375);
+    --muted-foreground: oklch(0.552 0.016 285.938);
+    --accent: oklch(96.744% 0.00143 285.225);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.92 0.004 286.32);
+    --ring: oklch(0.705 0.015 286.067);
+    --chart-1: oklch(0.845 0.143 164.978);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.596 0.145 163.225);
+    --chart-4: oklch(0.508 0.118 165.612);
+    --chart-5: oklch(0.432 0.095 166.913);
+    --radius: 0.625rem;
+
+    /* Semantic shortcuts */
+    --green: oklch(0.508 0.118 165.612);
+    --green-light: oklch(0.845 0.143 164.978);
+    --green-dark: oklch(0.432 0.095 166.913);
+    --dark: oklch(0.141 0.005 285.823);
+    --section-gap: 80px;
+    --code-bg: oklch(0.16 0.005 285.823);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ─── COVER ─────────────────────────────────────── */
+  .cover {
+    background: var(--dark);
+    color: var(--background);
+    padding: 80px 60px 60px;
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, oklch(0.508 0.118 165.612 / 0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 40px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, oklch(0.696 0.17 162.48 / 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover-logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .cover-logo svg {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+  .cover-logo-text {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--background);
+  }
+  .cover-logo-text span { color: var(--green-light); }
+  .cover-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--green-light);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cover-tag::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--green-light);
+  }
+  .cover h1 {
+    font-family: 'Oxanium', sans-serif;
+    font-size: clamp(48px, 7vw, 82px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .cover h1 span { color: var(--green-light); }
+  .cover-sub {
+    font-size: 16px;
+    color: oklch(1 0 0 / 0.55);
+    max-width: 580px;
+    margin-bottom: 40px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+  .cover-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .cover-meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: oklch(1 0 0 / 0.35);
+  }
+  .cover-meta-value {
+    font-size: 13px;
+    color: oklch(1 0 0 / 0.8);
+    font-weight: 500;
+  }
+
+  /* ─── NAV ─────────────────────────────────────────── */
+  .toc {
+    background: var(--secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toc-inner {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-inner::-webkit-scrollbar { display: none; }
+  .toc a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    padding: 14px 18px 13px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .toc a:hover { color: var(--foreground); border-bottom-color: var(--green); }
+
+  /* ─── LAYOUT ──────────────────────────────────────── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 60px; }
+
+  section {
+    padding: var(--section-gap) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-child { border-bottom: none; }
+
+  /* ─── SECTION HEADER ──────────────────────────────── */
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-num::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 60px;
+  }
+
+  h2 {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    color: var(--foreground);
+  }
+
+  h3 {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 36px 0 14px;
+    color: var(--foreground);
+  }
+
+  h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin: 28px 0 10px;
+  }
+
+  p { margin-bottom: 16px; color: oklch(0.25 0.005 285.823); }
+
+  /* ─── CALLOUT ─────────────────────────────────────── */
+  .callout {
+    background: var(--dark);
+    color: var(--background);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 32px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .callout::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; right: -50px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, oklch(0.508 0.118 165.612 / 0.2) 0%, transparent 70%);
+  }
+  .callout p {
+    color: oklch(1 0 0 / 0.8);
+    font-size: 16px;
+    margin: 0;
+    font-style: italic;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+  .callout strong { color: var(--green-light); font-style: normal; }
+
+  .callout-green {
+    background: oklch(0.96 0.04 165.612);
+    border: 1px solid oklch(0.8 0.1 165.612);
+    border-radius: 12px;
+    padding: 22px 28px;
+    margin: 24px 0;
+  }
+  .callout-green p {
+    color: var(--green-dark);
+    margin: 0;
+    font-size: 14px;
+  }
+  .callout-green strong { color: var(--green-dark); }
+
+  /* ─── CARDS ────────────────────────────────────────── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .card {
+    background: var(--secondary);
+    border-radius: 10px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--green); }
+  .card-icon { font-size: 22px; margin-bottom: 12px; display: block; }
+  .card-title {
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: var(--foreground);
+  }
+  .card p { font-size: 13px; color: var(--muted-foreground); margin: 0; line-height: 1.5; }
+
+  /* ─── FEATURE TABLE ───────────────────────────────── */
+  .feature-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .feature-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    text-align: left;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .feature-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .feature-table tr:last-child td { border-bottom: none; }
+  .feature-table tr:hover td { background: var(--secondary); }
+  .priority {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .p1 { background: oklch(0.95 0.04 165.612); color: var(--green-dark); }
+  .p2 { background: oklch(0.96 0.03 200); color: oklch(0.35 0.12 200); }
+  .p3 { background: oklch(0.97 0.01 285); color: var(--muted-foreground); }
+
+  /* ─── CODE ────────────────────────────────────────── */
+  pre {
+    background: var(--code-bg);
+    color: oklch(0.9 0.005 285);
+    border-radius: 10px;
+    padding: 24px 28px;
+    overflow-x: auto;
+    margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--secondary);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--green-dark);
+    border: 1px solid var(--border);
+  }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .hl { color: var(--green-light); }
+  .hl2 { color: oklch(0.7 0.15 220); }
+  .hl3 { color: oklch(0.8 0.1 165); }
+  .cm { color: oklch(0.5 0.01 285); }
+
+  /* ─── FLOW DIAGRAM ────────────────────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 28px 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .flow-step {
+    flex-shrink: 0;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    min-width: 130px;
+    text-align: center;
+  }
+  .flow-step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-foreground);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .flow-step-label { font-size: 12px; font-weight: 500; line-height: 1.3; }
+  .flow-arrow { flex-shrink: 0; width: 28px; text-align: center; color: var(--muted-foreground); font-size: 14px; }
+  .flow-step.accent {
+    background: var(--dark);
+    border-color: var(--dark);
+    color: var(--background);
+  }
+  .flow-step.accent .flow-step-num { color: var(--green-light); }
+  .flow-step.green {
+    background: oklch(0.96 0.04 165.612);
+    border-color: var(--green);
+    color: var(--green-dark);
+  }
+  .flow-step.green .flow-step-num { color: var(--green); }
+
+  /* ─── USER STORY ──────────────────────────────────── */
+  .story {
+    background: oklch(0.97 0.005 285);
+    border-left: 3px solid var(--green);
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+  }
+  .story strong { font-weight: 600; color: var(--green-dark); }
+
+  /* ─── STACK BADGE ─────────────────────────────────── */
+  .stack-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--secondary);
+    color: var(--foreground);
+    font-weight: 500;
+  }
+  .badge.dark {
+    background: var(--dark);
+    color: var(--green-light);
+    border-color: var(--dark);
+  }
+  .badge.green {
+    background: oklch(0.96 0.04 165.612);
+    color: var(--green-dark);
+    border-color: oklch(0.8 0.1 165.612);
+  }
+  .badge.mpesa {
+    background: oklch(0.96 0.04 145);
+    color: oklch(0.3 0.12 145);
+    border-color: oklch(0.75 0.12 145);
+  }
+
+  /* ─── PHASES ──────────────────────────────────────── */
+  .phases { position: relative; margin: 32px 0; }
+  .phase {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px dashed var(--border);
+    align-items: start;
+  }
+  .phase:last-child { border-bottom: none; margin-bottom: 0; }
+  .phase-label {
+    font-family: 'Oxanium', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .phase-label.ph1 { background: var(--dark); color: var(--green-light); }
+  .phase-label.ph2 { background: var(--green-dark); color: var(--primary-foreground); }
+  .phase-label.ph3 { background: var(--green); color: var(--primary-foreground); }
+  .phase-label.ph4 { background: var(--green-light); color: var(--green-dark); }
+  .phase-content h4 { margin-top: 0; margin-bottom: 10px; font-size: 13px; color: var(--foreground); }
+  .phase-content ul { padding-left: 16px; font-size: 13px; color: var(--muted-foreground); }
+  .phase-content ul li { margin-bottom: 6px; }
+  .phase-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    font-weight: 600;
+  }
+  .tag-ai { background: oklch(0.93 0.06 165.612); color: var(--green-dark); }
+  .tag-core { background: oklch(0.93 0.04 220); color: oklch(0.3 0.12 220); }
+  .tag-revenue { background: oklch(0.95 0.04 60); color: oklch(0.4 0.14 60); }
+  .tag-growth { background: oklch(0.94 0.03 300); color: oklch(0.4 0.1 300); }
+
+  /* ─── RISK TABLE ──────────────────────────────────── */
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 20px 0;
+  }
+  .risk-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+  }
+  .risk-table td { padding: 12px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .risk-high { color: var(--destructive); font-weight: 600; }
+  .risk-med { color: oklch(0.55 0.15 60); font-weight: 600; }
+  .risk-low { color: var(--green-dark); font-weight: 600; }
+
+  /* ─── REVENUE BLOCK ───────────────────────────────── */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .revenue-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .revenue-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--green);
+  }
+  .revenue-card.secondary::before { background: var(--green-light); }
+  .revenue-card.tertiary::before { background: var(--border); }
+  .rev-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin-bottom: 8px;
+  }
+  .rev-title {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--foreground);
+  }
+  .rev-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.5; margin: 0; }
+  .rev-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--green-dark);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* ─── AI FEATURE TIMELINE ─────────────────────────── */
+  .ai-timeline { margin: 28px 0; }
+  .ai-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px dashed var(--border);
+    align-items: start;
+  }
+  .ai-row:last-child { border-bottom: none; }
+  .ai-phase-badge {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px 8px;
+    border-radius: 6px;
+    line-height: 1.2;
+  }
+  .ai-content h4 { margin: 0 0 6px; font-size: 14px; color: var(--foreground); text-transform: none; letter-spacing: 0; }
+  .ai-content p { font-size: 13px; color: var(--muted-foreground); margin: 0; line-height: 1.5; }
+
+  /* ─── COMPARISON TABLE ────────────────────────────── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 20px 0;
+  }
+  .compare-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  .compare-table th.highlight { color: var(--green-dark); border-bottom-color: var(--green); }
+  .compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .xpesa-col { background: oklch(0.98 0.015 165.612); font-weight: 500; color: var(--green-dark); }
+  .check { color: var(--green); font-size: 15px; }
+  .cross { color: var(--muted-foreground); font-size: 15px; }
+
+  /* ─── PRINT ───────────────────────────────────────── */
+  @media print {
+    .toc { display: none; position: static; }
+    section { break-inside: avoid; }
+    pre { white-space: pre-wrap; }
+  }
+
+  @media (max-width: 700px) {
+    .cover, .container { padding-left: 24px; padding-right: 24px; }
+    .toc { padding: 0 24px; }
+    h2 { font-size: 26px; }
+    .flow { flex-direction: column; align-items: flex-start; }
+    .flow-arrow { transform: rotate(90deg); }
+    .phase { grid-template-columns: 1fr; }
+    .ai-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-logo">
+    <!-- xpesa asterisk logo (SVG recreation from uploaded image) -->
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="48" height="48" rx="10" fill="oklch(0.845 0.143 164.978)"/>
+      <!-- Asterisk * shape: 8 arms -->
+      <rect x="21.5" y="6" width="5" height="36" rx="2.5" fill="oklch(0.141 0.005 285.823)"/>
+      <rect x="21.5" y="6" width="5" height="36" rx="2.5" transform="rotate(45 24 24)" fill="oklch(0.141 0.005 285.823)"/>
+      <rect x="21.5" y="6" width="5" height="36" rx="2.5" transform="rotate(90 24 24)" fill="oklch(0.141 0.005 285.823)"/>
+      <rect x="21.5" y="6" width="5" height="36" rx="2.5" transform="rotate(135 24 24)" fill="oklch(0.141 0.005 285.823)"/>
+    </svg>
+    <span class="cover-logo-text">x<span>pesa</span></span>
+  </div>
+  <div class="cover-tag">Litepaper · v1.0</div>
+  <h1>Creator<br><span>Monetization</span><br>Reimagined</h1>
+  <p class="cover-sub">The payment layer for African creators. Fixed-price link gates and frictionless tipping powered by Avalanche smart accounts, USDC, and fiat offramp — so creators can say goodbye to manual DMs forever.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Primary Market</span>
+      <span class="cover-meta-value">Africa · East Africa</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Core Models</span>
+      <span class="cover-meta-value">Content Gating + Tipping</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Payment Rail</span>
+      <span class="cover-meta-value">Smart Accounts · USDC · Avax</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="cover-meta-label">Offramp</span>
+      <span class="cover-meta-value">Kotani Pay → FIAT</span>
+    </div>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#overview">01 Overview</a>
+    <a href="#problem">02 Problem</a>
+    <a href="#solution">03 Solution</a>
+    <a href="#models">04 Models</a>
+    <a href="#flows">05 User Flows</a>
+    <a href="#ai">06 AI Features</a>
+    <a href="#revenue">07 Revenue</a>
+    <a href="#roadmap">08 Roadmap</a>
+    <a href="#competition">09 Competition</a>
+    <a href="#risks">10 Risks</a>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- 01 OVERVIEW -->
+  <section id="overview">
+    <div class="section-num">01 — Overview</div>
+    <h2>What is xpesa?</h2>
+    <p>xpesa is a creator monetization platform built for African creators. It puts a paywall in front of any content a
+      creator already has — a Google Drive folder, a Notion page, a Telegram group invite, a Zoom link. And lets fans
+      pay with USDC from any chain via gas sponsored smart accounts. Creators receive payment in USDC and can withdraw
+      directly to fiat in one click.</p>
+    <p>xpesa is also a tipping layer: creators can drop a tip link in their bio, newsletter, or post and receive
+      open-ended appreciation payments from their community. Both modes run on the same infrastructure.</p>
+    <div class="callout">
+      <p>The pitch to African creators is not about crypto. It is: <strong>"You get paid in dollars. You withdraw to
+        fiat same day. You never chase anyone on WhatsApp for money again."</strong></p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="card-icon">🔗</span>
+        <div class="card-title">Content Gate</div>
+        <p>Drop any piece of content behind a price. Fan pays USDC, gets the content.
+          Creator never exposes the uploaded content until payment clears.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">☕</span>
+        <div class="card-title">Tip Link</div>
+        <p>A shareable pay-what-you-want page for every creator. Goes in a bio, email footer, or tweet. No content
+          required.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">📱</span>
+        <div class="card-title">Fiat Offramp</div>
+        <p>One-click USDC → fiat withdrawal via Kotani Pay. Fiat can be wired to the creators personal bank or mobile
+          money account.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">📊</span>
+        <div class="card-title">Creator Dashboard</div>
+        <p>Transaction history, conversion stats, link performance, and AI-powered insights in one clean view.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 PROBLEM -->
+  <section id="problem">
+    <div class="section-num">02 — Problem</div>
+    <h2>The African creator pain</h2>
+    <p>Content creators, educators, coaches, and freelancers across Kenya produce real value every day. Monetizing that
+      value is painful, manual, and has a lot of friction. The current process looks like this:</p>
+
+    <div class="flow">
+      <div class="flow-step"><span class="flow-step-num">Step 1</span><span class="flow-step-label">Post content or
+        offer</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">Step 2</span><span class="flow-step-label">"DM me to pay via
+        Mobile money/Bank"</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><span class="flow-step-num">Step 3</span><span class="flow-step-label">Wait. Chase.
+        Confirm manually</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">Step 4</span><span class="flow-step-label">DM the resource
+        individually</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">Step 5</span><span class="flow-step-label">Track it in a
+        notebook</span></div>
+    </div>
+
+    <p>xpesa collapses steps 2–5 to zero effort. That's the entire product thesis.</p>
+
+    <h3>Why existing platforms don't work</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">Gumroad / Payhip</div>
+        <p>No instant mobile money withdrawal. USD-only payouts. Slow international transfers. Designed for Western
+          creators with Western bank accounts.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Ko-fi / Buy Me a Coffee</div>
+        <p>No crypto, no M-Pesa. Kenyan creators use them but can't easily cash out. Platform can freeze accounts with
+          no recourse.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Manual M-Pesa</div>
+        <p>Free but completely unscalable. No automation, no delivery, no analytics. Works for 10 sales, breaks at
+          100.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Raw Crypto Wallets</div>
+        <p>QR codes, gas errors, wrong networks. Abandonment rate near 100% for non-crypto-native audiences.</p>
+      </div>
+    </div>
+
+    <h3>Who feels this pain most acutely</h3>
+    <p>The early xpesa market is not influencers with brand deals — it is the <strong>side-hustle creator</strong>:
+      campus students selling notes, Twitter/X educators selling guides, coaches selling templates, developers selling
+      boilerplates. These people are already monetizing manually. xpesa is a better workflow, not a new behaviour.</p>
+  </section>
+
+  <!-- 03 SOLUTION -->
+  <section id="solution">
+    <div class="section-num">03 — Solution</div>
+    <h2>How xpesa works</h2>
+
+    <h3>The core mechanic</h3>
+    <p>A creator authenticates with email/wallet, creates a content link (gated or tip), sets a price, and shares the
+      xpesa URL. When a fan visits, they connect theri smart wallets via social accounts (ThirdWeb SDK — supports
+      email-Avalanched embedded wallets so
+      crypto knowledge is not required), sign a payment request, and the USDC transfer settles on Avalanche in ~15
+      seconds. Once payment is confirmed the user signs the last access message to assert that their wallet is the one
+      that made the payment and the content is revealed.</p>
+
+    <h3>Tip mode — no content required</h3>
+    <p>A creator can create a tip link with no destination URL — just a title, a suggested amount, and their wallet
+      address. The fan pays, sees a thank-you screen and a special message, and the creator receives USDC.</p>
+  </section>
+
+  <!-- 04 MODELS -->
+  <section id="models">
+    <div class="section-num">04 — Monetization Models</div>
+    <h2>Content Gate &amp; Tip</h2>
+    <p>xpesa launches with two monetization modes that share the same payment infrastructure. Every creator link is
+      one or the other.</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="card-icon">🔒</span>
+        <div class="card-title">Content Gate</div>
+        <p>Fixed price. Fan pays exactly the set amount and gets access to the underlying content(URL, Document, Audio,
+          Video etc). Access is logged per wallet. Expiry is set by creator: 1-time, 1 hour, 1 month, forever.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">💚</span>
+        <div class="card-title">Tip / PWYW</div>
+        <p>Pay what you want. Creator sets a suggested amount or minimum of zero. No content gate — fan pays,
+          gets a thank-you screen. Creator builds goodwill, gets USDC.</p>
+      </div>
+    </div>
+
+    <h3>How they look on a creator's profile</h3>
+    <p>A creator's xpesa page is a simple list of their active links — both gated and tip items coexist. Fans see the title, price/tip suggestion, and a pay button. One profile, one wallet address, two modes.</p>
+
+    <pre><span class="cm">// Example: Wanjiru's xpesa page</span>
+<span class="hl">xpesa.com/wanjiru</span>
+
+<span class="hl3">├── [TIP]          </span> Buy me chai ☕              <span class="cm">→ pay what you want</span>
+<span class="hl3">├── [USDC 3.50]    </span> KCSE Revision Notes 2024    <span class="cm">→ Google Drive, 30-day access</span>
+<span class="hl3">├── [USDC 1.50]    </span> My CV Template              <span class="cm">→ Notion link, 1-time access</span>
+<span class="hl3">└── [TIP]          </span> Support my writing 🙏       <span class="cm">→ no content, appreciation only</span></pre>
+
+    <h3>Future model roadmap (post-MVP)</h3>
+    <table class="feature-table">
+      <thead>
+        <tr><th>Model</th><th>Description</th><th>When</th><th>Kenya Fit</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Subscriptions</strong></td>
+          <td>Recurring wallet charge for premium analytics and creator tools.</td>
+          <td>Month 4</td>
+          <td><span class="priority p1">⭐⭐⭐⭐</span></td>
+        </tr>
+        <tr>
+          <td><strong>Metered / API</strong></td>
+          <td>Pay per call. For developers monetizing APIs, data feeds, or AI tools.</td>
+          <td>Month 6</td>
+          <td><span class="priority p2">⭐⭐⭐⭐</span></td>
+        </tr>
+        <tr>
+          <td><strong>Hosted Content</strong></td>
+          <td>Creator uploads to xpesa. Full media proxy, streaming, watermarking.</td>
+          <td>Year 2</td>
+          <td><span class="priority p3">⭐⭐⭐</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 05 USER FLOWS -->
+  <section id="flows">
+    <div class="section-num">05 — User Flows</div>
+    <h2>End-to-end journeys</h2>
+
+    <h3>Flow 1: Creator onboarding</h3>
+    <div class="flow">
+      <div class="flow-step"><span class="flow-step-num">1</span><span class="flow-step-label">Sign up with email</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">2</span><span class="flow-step-label">Choose handle</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step green"><span class="flow-step-num">3</span><span class="flow-step-label">Connect or create wallet</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">4</span><span class="flow-step-label">Add fiat offramp details</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><span class="flow-step-num">5</span><span class="flow-step-label">Create first link</span></div>
+    </div>
+    <p>Target: creator has a shareable link within 3 minutes of landing on xpesa. Onboarding length is the critical success metric.</p>
+
+    <h3>Flow 2: Fan pays a gated link</h3>
+    <div class="flow">
+      <div class="flow-step"><span class="flow-step-num">1</span><span class="flow-step-label">Visits xpesa.com/pay/[id]</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">2</span><span class="flow-step-label">Sees preview + price</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step green"><span class="flow-step-num">3</span><span class="flow-step-label">Connect a smart wallet</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">4</span><span class="flow-step-label">Sign payment and access confirmation requests</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><span class="flow-step-num">5</span><span class="flow-step-label">Content revealed</span></div>
+    </div>
+
+    <h3>Flow 3: Creator withdraws to M-Pesa</h3>
+    <div class="flow">
+      <div class="flow-step"><span class="flow-step-num">1</span><span class="flow-step-label">Opens dashboard</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">2</span><span class="flow-step-label">Clicks "Withdraw"</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step green"><span class="flow-step-num">3</span><span class="flow-step-label">Confirms fiat offramp details</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-step-num">4</span><span class="flow-step-label">Signs wallet tx</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><span class="flow-step-num">5</span><span class="flow-step-label">Fiat lands in their account</span></div>
+    </div>
+    <p>The withdrawal uses Kotani Pay's SDK. xpesa passes the USDC amount + offramp details; Kotani Pay handles the swap
+      and STK push. Creator never interacts with an exchange.</p>
+
+    <h3>User stories</h3>
+    <div class="story"><strong>As a campus tutor,</strong> I want to create a paid link for my KCSE revision notes so that students can pay and access automatically without me sending individual DMs.</div>
+    <div class="story"><strong>As a Twitter creator,</strong> I want a tip link in my bio so that followers who find my content valuable can support me without me asking directly.</div>
+    <div class="story"><strong>As a developer,</strong> I want to sell a Figma kit by pasting the Figma URL into xpesa and setting a price, so I can start earning from it in under 5 minutes.</div>
+    <div class="story"><strong>As a creator,</strong> I want to withdraw my USDC earnings to fiat in one click so I don't need to deal with crypto exchanges or international bank transfers.</div>
+    <div class="story"><strong>As a fan,</strong> I want to pay for content using just my email (embedded wallet) so I don't need to install MetaMask or understand blockchain to access what I paid for.</div>
+  </section>
+
+  <!-- 06 AI FEATURES -->
+  <section id="ai">
+    <div class="section-num">06 — AI Feature Roadmap</div>
+    <h2>Intelligence, phased by usefulness</h2>
+    <p>AI features in xpesa are not decorative. Each one is mapped to a specific creator friction point and introduced at the moment it becomes relevant — not before.</p>
+
+    <div class="ai-timeline">
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph1">0 1<br>MVP</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Link Description Writer</h4>
+          <p>Creator uploads content or writes a short description of what they're selling. AI generates a compelling title and 2-sentence description for the xpesa payment page. Removes the blank-page problem for first-time creators who are not copywriters. A single prompt, no conversation history needed.</p>
+        </div>
+      </div>
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph2">0 2<br>Month 2</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Smart Pricing Suggestions</h4>
+          <p>When a creator sets a price, AI analyzes: content category (notes vs template vs consultation vs community access), creator's audience size if they connect their Twitter/X, and comparable items already on xpesa. Returns a suggested price range with reasoning. Reduces the anxiety of "am I charging too much?" which is one of the top reasons creators undercharge or don't charge at all.</p>
+        </div>
+      </div>
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph2">0 3<br>Month 3</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Conversational Dashboard Insights</h4>
+          <p>Instead of a static analytics page, the creator dashboard includes an AI assistant that surfaces actionable observations: "Your revision notes link got 40 visits but only 8 payments this week — 20% conversion. Similar links convert at 35%. Your price may be slightly high for your audience size. Want to try a lower price for 7 days?"</p>
+        </div>
+      </div>
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph3">0 4<br>Month 5</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Fraud &amp; Anomaly Detection</h4>
+          <p>Lightweight ML model flags unusual transaction patterns: same wallet purchasing the same link 10+ times, a single link receiving 500 visits from one IP range, a new creator account suddenly processing 100× typical volume. These flags trigger manual review, not auto-suspension. Critical for platform trust as volume grows. Can start as rules-Avalanched and migrate to a model later.</p>
+        </div>
+      </div>
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph3">0 5<br>Month 6</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Content Category Auto-Tagging</h4>
+          <p>As xpesa grows toward a discoverable marketplace, AI automatically categorizes creator links by type (education, templates, community, consultation, code, etc.) Avalanched on title and description. Enables browse/search for buyers without creators needing to manually tag. Required before any marketplace or discovery layer is viable.</p>
+        </div>
+      </div>
+
+      <div class="ai-row">
+        <div class="ai-phase-badge ph4">0 6<br>Year 2</div>
+        <div class="ai-content">
+          <h4><span class="phase-tag tag-ai">AI</span> Agentic Tipping (MCP Server)</h4>
+          <p>xpesa exposes an MCP (Model Context Protocol) server so AI agents — Claude, AutoGPT, custom bots — can tip or purchase content on behalf of users. This is the Smart accounts protocol's natural endpoint: any agent that can make HTTP requests can pay for content. Positions xpesa as tipping infrastructure for the agentic web, not just a creator tool.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 07 REVENUE -->
+  <section id="revenue">
+    <div class="section-num">07 — Revenue Model</div>
+    <h2>How xpesa makes money</h2>
+
+    <div class="revenue-grid">
+      <div class="revenue-card">
+        <div class="rev-label">Primary · Phase 1+</div>
+        <div class="rev-title">Transaction Fee</div>
+        <p class="rev-desc">5% platform fee on every payment processed. Deducted with the same batch USDC transaction to creator wallet. Invisible to the fan. Small enough that creators don't complain. Scales directly with creator volume.</p>
+        <span class="rev-amount">5% per tx</span>
+      </div>
+      <div class="revenue-card secondary">
+        <div class="rev-label">Secondary · Phase 2+</div>
+        <div class="rev-title">Pro Creator Tier</div>
+        <p class="rev-desc">Monthly subscription unlocking: custom branded page, bundle creation, advanced analytics, priority offramp, remove xpesa branding, unlimited active links.</p>
+        <span class="rev-amount">~$5–10 / mo</span>
+      </div>
+      <div class="revenue-card tertiary">
+        <div class="rev-label">Tertiary · Phase 3+</div>
+        <div class="rev-title">Offramp Revenue Share</div>
+        <p class="rev-desc">Negotiate a volume-Avalanched revenue share with Kotani Pay on USDC→KES conversions routed through xpesa. Becomes meaningful at $500K+ monthly withdrawal volume.</p>
+        <span class="rev-amount">Volume-Avalanched</span>
+      </div>
+    </div>
+
+    <h3>Revenue projections (realistic, not pitch deck)</h3>
+    <table class="feature-table">
+      <thead>
+        <tr><th>Milestone</th><th>Active Creators</th><th>Avg Monthly GMV / Creator</th><th>Platform GMV</th><th>Revenue (5%)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Month 3 (seed)</td>
+          <td>50</td>
+          <td>$30</td>
+          <td>$1,500</td>
+          <td>$75 / mo</td>
+        </tr>
+        <tr>
+          <td>Month 6</td>
+          <td>300</td>
+          <td>$40</td>
+          <td>$12,000</td>
+          <td>$600 / mo</td>
+        </tr>
+        <tr>
+          <td>Month 12</td>
+          <td>2,000</td>
+          <td>$50</td>
+          <td>$100,000</td>
+          <td>$5,000 / mo</td>
+        </tr>
+        <tr>
+          <td>Year 2</td>
+          <td>8,000</td>
+          <td>$65</td>
+          <td>$520,000</td>
+          <td>$26,000 / mo</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 08 ROADMAP -->
+  <section id="roadmap">
+    <div class="section-num">08 — Build Roadmap</div>
+    <h2>Phased delivery</h2>
+
+    <div class="phases">
+
+      <div class="phase">
+        <div class="phase-label ph1">Done<br>Weeks 1–4<br>MVP</div>
+        <div class="phase-content">
+          <h4><span class="phase-tag tag-core">Core</span> Ship: the simplest thing that earns money</h4>
+          <ul>
+            <li>Creator signup, wallet address setup, handle selection</li>
+            <li>Link creation — Gate mode (URL + price + expiry)</li>
+            <li>Link creation — Tip mode (title + suggested amount)</li>
+            <li>Public creator profile page (<code>xpesa.com/[handle]</code>)</li>
+            <li>Fan payment flow — ThirdWeb wallet connect + Smart accounts USDC transfer</li>
+            <li>On-chain confirmation listener + access token minting (Redis)</li>
+            <li>Link reveal / thank-you screen post-payment</li>
+            <li>Creator dashboard — earnings, transactions, active links</li>
+            <li>Fiat offramp via Kotani Pay SDK</li>
+            <li><span class="phase-tag tag-ai">AI</span> Link description writer</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label ph2">In Progress<br>Month 2<br>Growth</div>
+        <div class="phase-content">
+          <h4><span class="phase-tag tag-core">Core</span> Retention &amp; power-user features</h4>
+          <ul>
+            <li>Bundle links — one payment unlocks multiple URLs</li>
+            <li>Notification emails on payment</li>
+            <li>Fan access history — wallet-Avalanched, revisit past purchases</li>
+            <li>Per-link analytics — views, conversions, revenue over time</li>
+            <li>One-click offramp (Kotani Pay integrated into dashboard)</li>
+            <li><span class="phase-tag tag-ai">AI</span> Smart pricing suggestions on link creation</li>
+            <li><span class="phase-tag tag-revenue">Revenue</span> Pro tier launch — bundles, branded page, advanced analytics</li>
+            <li><span class="phase-tag tag-growth">Growth</span> Referral system — creator earns reduced fee for referring other creators</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label ph3">Upcoming<br>Month 3–5<br>Scale</div>
+        <div class="phase-content">
+          <h4><span class="phase-tag tag-growth">Growth</span> Platform depth + expansion</h4>
+          <ul>
+            <li>Subscription / recurring payments — community access</li>
+            <li>Custom domain support for Pro creators</li>
+            <li><span class="phase-tag tag-ai">AI</span> Conversational dashboard insights assistant</li>
+            <li><span class="phase-tag tag-ai">AI</span> Fraud and anomaly detection (rules-Avalanched first, ML later)</li>
+            <li><span class="phase-tag tag-revenue">Revenue</span> Offramp revenue share agreement with Kotani Pay</li>
+            <li>Embeddable tip button widget (iframe + JS snippet for external sites)</li>
+            <li>Creator payout scheduling (auto-offramp on threshold)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-label ph4">Upcoming<br>Month 6–12<br>Platform</div>
+        <div class="phase-content">
+          <h4><span class="phase-tag tag-growth">Growth</span> xpesa as infrastructure, not just a tool</h4>
+          <ul>
+            <li>xpesa Marketplace — browse and discover creator content</li>
+            <li><span class="phase-tag tag-ai">AI</span> Content auto-tagging and categorization for marketplace</li>
+            <li><span class="phase-tag tag-ai">AI</span> MCP server — agentic tipping and content purchasing</li>
+            <li>Mobile app (React Native) — iOS + Android</li>
+            <li>Creator API — let developers build on top of xpesa</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 09 COMPETITION -->
+  <section id="competition">
+    <div class="section-num">09 — Competitive Landscape</div>
+    <h2>Where xpesa sits</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="highlight">xpesa</th>
+          <th>Gumroad</th>
+          <th>Ko-fi</th>
+          <th>Buy Me a Coffee</th>
+          <th>Manual M-Pesa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fiat withdrawal</td>
+          <td class="xpesa-col"><span class="check">✓</span> One-click</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span> Manual</td>
+        </tr>
+        <tr>
+          <td>Crypto / USDC payment</td>
+          <td class="xpesa-col"><span class="check">✓</span> Smart accounts + Avalanche</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Content gate (external URL)</td>
+          <td class="xpesa-col"><span class="check">✓</span> Any</td>
+          <td>File upload only</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td>Manual DM</td>
+        </tr>
+        <tr>
+          <td>Tipping / PWYW</td>
+          <td class="xpesa-col"><span class="check">✓</span></td>
+          <td>Limited</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="check">✓</span></td>
+          <td>Manual</td>
+        </tr>
+        <tr>
+          <td>Non-crypto buyer UX</td>
+          <td class="xpesa-col"><span class="check">✓</span> Email wallet</td>
+          <td><span class="check">✓</span> Card</td>
+          <td><span class="check">✓</span> Card</td>
+          <td><span class="check">✓</span> Card</td>
+          <td><span class="check">✓</span> M-Pesa</td>
+        </tr>
+        <tr>
+          <td>Platform fee</td>
+          <td class="xpesa-col">5%</td>
+          <td>10% + payment</td>
+          <td>0% (cards 2–5%)</td>
+          <td>5% + payment</td>
+          <td>0%</td>
+        </tr>
+        <tr>
+          <td>No account signup for buyer</td>
+          <td class="xpesa-col"><span class="check">✓</span></td>
+          <td><span class="cross">✗</span></td>
+          <td>Optional</td>
+          <td>Optional</td>
+          <td><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Built for African market</td>
+          <td class="xpesa-col"><span class="check">✓</span> Africa-first</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+       <strong>xpesa is the only creator monetization platform where you receive payments in dollars and withdraw to local fiat same day.</strong> Every competitor requires a bank account, a Western payment processor, or a manual workaround to achieve this. xpesa makes it one click.</p>
+    </div>
+  </section>
+
+  <!-- 10 RISKS -->
+  <section id="risks">
+    <div class="section-num">12 — Risks &amp; Mitigations</div>
+    <h2>Risk register</h2>
+
+    <table class="risk-table">
+      <thead>
+        <tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Buyer wallet friction</strong> — non-crypto fans abandon payment because wallet setup is too complex</td>
+          <td class="risk-high">High</td>
+          <td>ThirdWeb smart wallets reduce this to zero crypto knowledge required.</td>
+        </tr>
+        <tr>
+          <td><strong>Link sharing weakness</strong> — fan pays, gets Google Drive, shares it with friends</td>
+          <td class="risk-med">Medium</td>
+          <td>Deliberate product tradeoff. Mitigate by encouraging creators to use password-protected or access-controlled destinations (Notion, private Google Drive).
+            For high-value content, recommend access-expiry settings.</td>
+        </tr>
+        <tr>
+          <td><strong>Kotani Pay dependency</strong> — single offramp provider for M-Pesa; outages or API changes break withdrawals</td>
+          <td class="risk-high">High</td>
+          <td>Integrate Mara and Transak as fallback offramp providers from Phase 2 onwards. Abstract offramp into a provider interface so switching is a config change, not a rewrite.</td>
+        </tr>
+        <tr>
+          <td><strong>CBK regulatory action</strong> — Central Bank of Kenya moves against USDC payments or crypto rails</td>
+          <td class="risk-med">Medium</td>
+          <td>xpesa is non-custodial — creator wallets are self-managed, funds never touch xpesa's accounts. Kotani Pay holds the relevant money-transmission license for the KES conversion. xpesa is a "creator tools software" not "crypto payment app".</td>
+        </tr>
+        <tr>
+          <td><strong>Manual M-Pesa inertia</strong> — creators with existing audiences don't switch because their fans already know the DM workflow</td>
+          <td class="risk-med">Medium</td>
+          <td>Target creators who are just starting to monetize — they have no existing workflow to switch from. For established creators, pitch xpesa as an additional channel, not a replacement. The tip link in a bio is additive, not disruptive.</td>
+        </tr>
+        <tr>
+          <td><strong>USDC gas costs on Avalanche</strong> — gas spike makes small transactions uneconomical</td>
+          <td class="risk-low">Low</td>
+          <td>Avalanche gas is ~$0.001 per transfer. Even at 100× spike this is $0.10 — still viable for a $1+ transaction. Display gas estimate before confirmation so fans aren't surprised.</td>
+        </tr>
+        <tr>
+          <td><strong>Content policy abuse</strong> — creators gate illegal or harmful content behind xpesa links</td>
+          <td class="risk-med">Medium</td>
+          <td>Creator ToS with clear prohibited content list. Report mechanism on every payment page. Ability to disable a link within minutes. Since xpesa never serves the content directly liability is similar to a URL shortener, not a content host.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<div style="background: var(--dark); color: oklch(1 0 0 / 0.3); text-align:center; padding: 36px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; display: flex; align-items: center; justify-content: center; gap: 16px;">
+  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;opacity:0.4">
+    <rect width="32" height="32" rx="6" fill="oklch(0.845 0.143 164.978)"/>
+    <rect x="14" y="4" width="4" height="24" rx="2" fill="oklch(0.141 0.005 285.823)"/>
+    <rect x="14" y="4" width="4" height="24" rx="2" transform="rotate(45 16 16)" fill="oklch(0.141 0.005 285.823)"/>
+    <rect x="14" y="4" width="4" height="24" rx="2" transform="rotate(90 16 16)" fill="oklch(0.141 0.005 285.823)"/>
+    <rect x="14" y="4" width="4" height="24" rx="2" transform="rotate(135 16 16)" fill="oklch(0.141 0.005 285.823)"/>
+  </svg>
+  XPESA · v1.0 · CREATOR MONETIZATION FOR AFRICA · APRIL 2026
+</div>
+
+</body>
+</html>
